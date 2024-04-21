@@ -1,0 +1,55 @@
+import os
+import nltk
+from nltk.corpus import stopwords
+from collections import Counter
+
+# Path to the text file
+file_path = "random_paragraphs.txt"
+
+def remove_stopwords(text, custom_stopwords=None):
+    # Tokenize the text
+    tokens = nltk.word_tokenize(text)
+    
+    # Remove stopwords
+    if custom_stopwords:
+        filtered_tokens = [word for word in tokens if word.lower() not in custom_stopwords]
+    else:
+        stop_words = set(stopwords.words('english'))
+        filtered_tokens = [word for word in tokens if word.lower() not in stop_words]
+    
+    return filtered_tokens
+
+def count_word_frequency(tokens):
+    # Count word frequency
+    word_freq = Counter(tokens)
+    return word_freq
+
+def main():
+    # Check if the text file exists
+    if not os.path.exists(file_path):
+        print(f"Error: File '{file_path}' not found.")
+        return
+    
+    # Read the contents of the text file
+    with open(file_path, 'r', encoding='utf-8') as file:
+        text = file.read()
+    
+    # Prompt user for custom stop words
+    custom_stopwords_input = input("Enter custom stop words separated by comma (or leave empty to use NLTK stopwords): ")
+    custom_stopwords = None
+    if custom_stopwords_input:
+        custom_stopwords = custom_stopwords_input.split(',')
+    
+    # Remove stopwords
+    filtered_text = remove_stopwords(text, custom_stopwords)
+    
+    # Count word frequency
+    word_freq = count_word_frequency(filtered_text)
+    
+    # Display word frequency count
+    print("\nWord Frequency Count:")
+    for word, freq in word_freq.items():
+        print(f"{word}: {freq}")
+
+if __name__ == "__main__":
+    main()
